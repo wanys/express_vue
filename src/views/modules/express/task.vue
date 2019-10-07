@@ -2,7 +2,13 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+        <el-input v-model="dataForm.userId" placeholder="用户ID" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-select v-model="dataForm.taskType" placeholder="任务类型">
+          <el-option v-for="(item,index) in dataForm.typeItems" 
+          :label="item.label" :value="item.value" :key="index"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -26,25 +32,25 @@
         prop="taskId"
         header-align="center"
         align="center"
-        label="任务编号">
+        label="编号">
       </el-table-column>
       <el-table-column
         prop="taskReceiverId"
         header-align="center"
         align="center"
-        label="任务领取人id">
+        label="领取人">
       </el-table-column>
       <el-table-column
         prop="userId"
         header-align="center"
         align="center"
-        label="用户id">
+        label="用户ID">
       </el-table-column>
       <el-table-column
         prop="orderId"
         header-align="center"
         align="center"
-        label="订单id">
+        label="订单ID">
       </el-table-column>
       <el-table-column
         prop="transportNo"
@@ -56,25 +62,25 @@
         prop="phoneNum"
         header-align="center"
         align="center"
-        label="发/收手机号">
+        label="手机号">
       </el-table-column>
       <el-table-column
         prop="address"
         header-align="center"
         align="center"
-        label="取货/派送地址">
+        label="地址">
       </el-table-column>
       <el-table-column
         prop="taskType"
         header-align="center"
         align="center"
-        label="任务类型">
+        label="类型">
       </el-table-column>
       <el-table-column
         prop="taskStatus"
         header-align="center"
         align="center"
-        label="任务状态">
+        label="状态">
       </el-table-column>
       <el-table-column
         prop="allocationBy"
@@ -144,7 +150,22 @@
     data () {
       return {
         dataForm: {
-          key: ''
+          userId: 'userId',
+          taskType: 'taskType',
+          typeItems: [
+            {
+              value: 'pull',
+              label: '揽件'
+            },
+            {
+              value: 'push',
+              label: '派件'
+            },
+            {
+              value: '',
+              label: '其他'
+            }
+          ]
         },
         dataList: [],
         pageIndex: 1,
@@ -171,7 +192,8 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key
+            'userId': this.dataForm.userId,
+            'taskType': this.dataForm.taskType
           })
         }).then(({data}) => {
           if (data && data.code === 0) {

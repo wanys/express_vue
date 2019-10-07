@@ -4,9 +4,9 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="订单编号" prop="orderId">
+    <!-- <el-form-item label="订单编号" prop="orderId">
       <el-input v-model="dataForm.orderId" placeholder="订单编号"></el-input>
-    </el-form-item>
+    </el-form-item> -->
     <el-form-item label="用户ID" prop="userId">
       <el-input v-model="dataForm.userId" placeholder="用户ID"></el-input>
     </el-form-item>
@@ -37,9 +37,9 @@
     <el-form-item label="订单状态" prop="orderStatus">
       <el-input v-model="dataForm.orderStatus" placeholder="订单状态"></el-input>
     </el-form-item>
-    <el-form-item label="创建时间" prop="createTime">
+    <!-- <el-form-item label="创建时间" prop="createTime">
       <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
-    </el-form-item>
+    </el-form-item> -->
     <el-form-item label="快递公司" prop="express">
       <el-input v-model="dataForm.express" placeholder="快递公司"></el-input>
     </el-form-item>
@@ -69,13 +69,13 @@
           goodsType: '',
           transportNo: '',
           orderStatus: '',
-          createTime: '',
+          // createTime: '',
           express: ''
         },
         dataRule: {
-          orderId: [
-            { required: true, message: '订单编号不能为空', trigger: 'blur' }
-          ],
+          // orderId: [
+          //   { required: true, message: '订单编号不能为空', trigger: 'blur' }
+          // ],
           userId: [
             { required: true, message: '用户ID不能为空', trigger: 'blur' }
           ],
@@ -106,9 +106,9 @@
           orderStatus: [
             { required: true, message: '订单状态不能为空', trigger: 'blur' }
           ],
-          createTime: [
-            { required: true, message: '创建时间不能为空', trigger: 'blur' }
-          ],
+          // createTime: [
+          //   { required: true, message: '创建时间不能为空', trigger: 'blur' }
+          // ],
           express: [
             { required: true, message: '快递公司不能为空', trigger: 'blur' }
           ]
@@ -139,7 +139,7 @@
                 this.dataForm.goodsType = data.order.goodsType
                 this.dataForm.transportNo = data.order.transportNo
                 this.dataForm.orderStatus = data.order.orderStatus
-                this.dataForm.createTime = data.order.createTime
+                // this.dataForm.createTime = data.order.createTime
                 this.dataForm.express = data.order.express
               }
             })
