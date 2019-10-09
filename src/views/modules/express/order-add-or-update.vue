@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="dataForm.operate ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
@@ -57,7 +57,7 @@
       return {
         visible: false,
         dataForm: {
-          id: 0,
+          operate: true,
           orderId: '',
           userId: '',
           senderName: '',
@@ -116,12 +116,13 @@
       }
     },
     methods: {
-      init (id) {
-        this.dataForm.id = id || 0
+      init (id,operate) {
+        this.dataForm.operate=operate
         this.visible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
+            alert("获取订单信息"+this.dataForm.id);
             this.$http({
               url: this.$http.adornUrl(`/express/order/info/${this.dataForm.id}`),
               method: 'get',

@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('express:order:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('express:order:save')" type="primary" @click="addOrUpdateHandle('')">新增</el-button>
         <el-button v-if="isAuth('express:order:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
@@ -23,88 +23,98 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
-        header-align="center"
-        align="center"
-        label="">
-      </el-table-column>
-      <el-table-column
         prop="orderId"
         header-align="center"
         align="center"
-        label="订单编号">
+        label="订单编号"
+        width="180">
       </el-table-column>
       <el-table-column
         prop="userId"
         header-align="center"
         align="center"
-        label="用户ID">
+        label="用户ID"
+        width="80">
       </el-table-column>
       <el-table-column
         prop="senderName"
         header-align="center"
         align="center"
-        label="寄件人姓名">
+        label="寄件人姓名"
+        width="100%">
       </el-table-column>
       <el-table-column
         prop="senderPhone"
         header-align="center"
         align="center"
-        label="寄件人号码">
+        label="寄件人号码"
+        width="120">
       </el-table-column>
       <el-table-column
         prop="senderAddr"
         header-align="center"
         align="center"
-        label="寄件人地址">
+        label="寄件人地址"
+        width="120"
+        show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
         prop="receiverName"
         header-align="center"
         align="center"
-        label="收件人姓名">
+        label="收件人姓名"
+        width="100%">
       </el-table-column>
       <el-table-column
         prop="receiverPhone"
         header-align="center"
         align="center"
-        label="收件人号码">
+        label="收件人号码"
+        width="120">
       </el-table-column>
       <el-table-column
         prop="receiverAddr"
         header-align="center"
         align="center"
-        label="收件人地址">
+        label="收件人地址"
+        width="120"
+        show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
         prop="goodsType"
         header-align="center"
         align="center"
-        label="物品种类">
+        label="物品种类"
+        width="100%">
       </el-table-column>
       <el-table-column
         prop="transportNo"
         header-align="center"
         align="center"
-        label="运单号">
+        label="运单号"
+        width="100%">
       </el-table-column>
       <el-table-column
         prop="orderStatus"
         header-align="center"
         align="center"
-        label="订单状态">
+        label="订单状态"
+        width="100%">
       </el-table-column>
       <el-table-column
         prop="createTime"
         header-align="center"
         align="center"
-        label="创建时间">
+        label="创建时间"
+        width="170"
+        show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
         prop="express"
         header-align="center"
         align="center"
-        label="快递公司">
+        label="快递公司"
+        width="100%">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -113,8 +123,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.orderId)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.orderId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -195,9 +205,14 @@
       },
       // 新增 / 修改
       addOrUpdateHandle (id) {
+        var operate=false;
+        if(id=='')
+        {
+          operate=true;
+        }
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
+          this.$refs.addOrUpdate.init(id,operate)
         })
       },
       // 删除
@@ -229,6 +244,32 @@
             }
           })
         })
+      },
+      // 自定义表头列宽
+      flexColumnWidth(str) {
+        let flexWidth = 0
+        for (const char of str) {
+          console.log(char);
+          if ((char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z')) {
+            // 如果是英文字符，为字符分配8个单位宽度
+            flexWidth += 8
+          } else if (char >= '\u4e00' && char <= '\u9fa5') {
+            // 如果是中文字符，为字符分配20个单位宽度
+            flexWidth += 20
+          } else {
+            // 其他种类字符，为字符分配5个单位宽度
+            flexWidth += 5
+          }
+        }
+        if (flexWidth < 50) {
+          // 设置最小宽度
+          flexWidth = 200
+        }
+        if (flexWidth > 250) {
+          // 设置最大宽度
+          flexWidth = 250
+        }
+        return flexWidth + 'px'
       }
     }
   }

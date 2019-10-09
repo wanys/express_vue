@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="dataForm.operate ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
@@ -60,6 +60,7 @@
       return {
         visible: false,
         dataForm: {
+          operate: true,
           taskId: 0,
           taskReceiverId: '',
           userId: '',
@@ -123,8 +124,8 @@
       }
     },
     methods: {
-      init (id) {
-        this.dataForm.taskId = id || 0
+      init (id,operate) {
+        this.dataForm.operate = operate
         this.visible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
