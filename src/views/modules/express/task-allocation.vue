@@ -10,9 +10,9 @@
       <el-form-item>
         <el-select v-model="dataForm.taskReceiverId" placeholder="任务领取人">
           <el-option
-            v-for="(item,index) in usersList"
-            :label="item.name"
-            :value="item.id"
+            v-for="(item,index) in coueierList"
+            :label="item.username"
+            :value="item.userId"
             :key="index"
           ></el-option>
         </el-select>
@@ -26,6 +26,9 @@
 </template>
 
 <script>
+	
+import qs from 'qs'
+
 export default {
   data() {
     return {
@@ -33,8 +36,8 @@ export default {
       dataForm: {
         taskReceiverId: ""
       },
-      userInfo: { id: "", name: "" },
-      usersList: userInfo[10],
+      coueierList: [],//快递员列表
+      taskIds: [],
       dataRule: {
         taskReceiverId: [
           { required: true, message: "任务领取人id不能为空", trigger: "blur" }
@@ -44,6 +47,7 @@ export default {
   },
   methods: {
     init(ids, operate) {
+      this.taskIds=ids;
       this.visible = true;
       this.$nextTick(() => {
         //this.$refs['dataForm'].resetFields()
@@ -54,12 +58,8 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              for (var i = 0; i < data.userList.length; i++) {
-                this.userInfo.id = data.userList[i].userId;
-                this.userInfo.name = data.userList[i].username;
-                this.usersList.push(this.userInfo);
-                console.log(this.usersList);
-              }
+              this.coueierList=data.courierList;
+
             }
           });
         }
@@ -68,13 +68,16 @@ export default {
     // 表单提交
     dataFormSubmit() {
       this.$refs["dataForm"].validate(valid => {
+        console.log(this.dataForm.taskReceiverId);
+        console.log(this.taskIds);
+        let comment={
+              taskReceiverId: this.dataForm.taskReceiverId,
+              taskIds: this.taskIds}
         if (valid) {
           this.$http({
             url: this.$http.adornUrl("/express/task/allocation"),
             method: "post",
-            data: this.$http.adornData({
-              taskReceiverId: this.dataForm.taskReceiverId
-            })
+            data: qs.stringify(comment)
           }).then(({ data }) => {
             if (data && data.code === 0) {
               this.$message({
