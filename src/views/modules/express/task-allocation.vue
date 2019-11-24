@@ -70,14 +70,12 @@ export default {
       this.$refs["dataForm"].validate(valid => {
         console.log(this.dataForm.taskReceiverId);
         console.log(this.taskIds);
-        let comment={
-              taskReceiverId: this.dataForm.taskReceiverId,
-              taskIds: this.taskIds}
+      
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl("/express/task/allocation"),
+            url: this.$http.adornUrl(`/express/task/allocation/${this.dataForm.taskReceiverId}`),
             method: "post",
-            data: qs.stringify(comment)
+            data: this.$http.adornData(this.taskIds, false)
           }).then(({ data }) => {
             if (data && data.code === 0) {
               this.$message({
