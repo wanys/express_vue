@@ -1,13 +1,16 @@
 <template>
-    <el-button v-if="isAuth('express:qrcode:print')" type="primary" @click="pintQRCode()">打印二维码</el-button>
+  <div>
+      <el-button v-if="isAuth('express:qrcode:print')" type="primary" @click="pintQRCode()">打印二维码</el-button>
+      <a class='download' :href='downloadhttp' download="" title="下载">下载</a>
+  </div>
 </template>
+
 <script>
+  import axios from 'axios'
   export default {
     data () {
       return {
-        dataForm: {
-          key: ''
-        },
+        downloadhttp : ""
       }
     },
     
@@ -22,7 +25,8 @@
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
-              console.log(data);
+              console.log(data.filepath);
+              this.downloadhttp=data.filepath;
           } else {
             console.log(data);
           }
