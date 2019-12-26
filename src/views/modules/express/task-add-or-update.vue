@@ -22,10 +22,10 @@
     <el-form-item label="取货/派送地址" prop="address">
       <el-input v-model="dataForm.address" placeholder="取货/派送地址"></el-input>
     </el-form-item>
-    <el-form-item label="任务类型（0 揽件；1派送）" prop="taskType">
+    <el-form-item label="任务类型" prop="taskType">
       <el-input v-model="dataForm.taskType" placeholder="任务类型（0 揽件；1派送）"></el-input>
     </el-form-item>
-    <el-form-item label="任务状态（0有效；1取消）" prop="taskStatus">
+    <el-form-item label="任务状态" prop="taskStatus">
       <el-input v-model="dataForm.taskStatus" placeholder="任务状态（0有效；1取消）"></el-input>
     </el-form-item>
     <el-form-item label="分配人" prop="allocationBy">
