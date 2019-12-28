@@ -1,11 +1,11 @@
 /**
  * 动态加载初始资源
  */
-;(function() {
+;(function () {
   var resList = {
     icon: window.SITE_CONFIG.cdnUrl + '/static/img/favicon.ico',
     css: [
-      window.SITE_CONFIG.cdnUrl + '/static/css/app.css',
+      window.SITE_CONFIG.cdnUrl + '/static/css/app.css'
     ],
     js: [
       // 插件, 放置业务之前加载, 以免业务需求依赖插件时, 还未加载出错
