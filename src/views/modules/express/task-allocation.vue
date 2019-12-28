@@ -26,7 +26,7 @@
 </template>
 
 <script>
-	
+
 import qs from 'qs'
 
 export default {
@@ -70,7 +70,7 @@ export default {
       this.$refs["dataForm"].validate(valid => {
         console.log(this.dataForm.taskReceiverId);
         console.log(this.taskIds);
-      
+
         if (valid) {
           this.$http({
             url: this.$http.adornUrl(`/express/task/allocation/${this.dataForm.taskReceiverId}`),
