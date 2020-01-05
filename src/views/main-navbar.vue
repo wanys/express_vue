@@ -19,9 +19,11 @@
         mode="horizontal">
         <el-menu-item index="1" @click="$router.push({ name: 'theme' })">
           <template slot="title">
-            <el-badge value="new">
-              <icon-svg name="shezhi" class="el-icon-setting"></icon-svg>
-            </el-badge>
+            <icon-svg name="shezhi" class="el-icon-setting"></icon-svg>
+
+            <!--<el-badge value="new">-->
+              <!--<icon-svg name="shezhi" class="el-icon-setting"></icon-svg>-->
+            <!--</el-badge>-->
           </template>
         </el-menu-item>
         <!--<el-menu-item index="2">
