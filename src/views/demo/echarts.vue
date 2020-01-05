@@ -52,6 +52,8 @@ export default {
       this.initChartPie()
       this.initChartScatter()
       this.getCharLineData()
+      this.getCharBarData()
+      this.getCharPieData()
     },
     activated () {
       // 由于给echart添加了resize事件, 在组件激活时需要重新resize绘画一次, 否则出现空白bug
@@ -73,14 +75,14 @@ export default {
       initChartLine () {
         var option = {
           'title': {
-            'text': '一周工作量'
+            'text': '月份订单的变化'
           },
           'tooltip': {
             'trigger': 'axis'
           },
-          'legend': {
-            'data': [ '揽件', '派件' ]
-          },
+          // 'legend': {
+          //   'data': [ '揽件', '派件' ]
+          // },
           'grid': {
             'left': '3%',
             'right': '4%',
@@ -94,24 +96,36 @@ export default {
           },
           'xAxis': {
             'type': 'category',
-            'boundaryGap': false
+            'boundaryGap': false,
+            axisLabel: {
+              interval: 0 // 横轴信息全部显示
+            }
             // 'data': [ '周一', '周二', '周三', '周四', '周五', '周六', '周日' ]
           },
           'yAxis': {
             'type': 'value'
           },
           'series': [
+            // {
+            //   'name': '揽件',
+            //   'type': 'line'
+            //   // 'stack': '总量'
+            //   // 'data': [ 120, 132, 101, 134, 90, 230, 210 ]
+            // },
             {
-              'name': '揽件',
+              'name': '订单',
               'type': 'line',
-              'stack': '总量'
-              // 'data': [ 120, 132, 101, 134, 90, 230, 210 ]
-            },
-            {
-              'name': '派件',
-              'type': 'line',
-              'stack': '总量'
-              // 'data': [ 820, 932, 901, 934, 1290, 1330, 1320 ]
+              label: {
+                normal: {
+                  show: true
+                  // 柱上字体样式
+                  // textStyle: {
+                  //   fontSize: 12,
+                  //   fontWeight: 'bolder'
+                  // }
+                }
+              }
+              // 'stack': '总量'  stack多条数据堆积到一个柱体
             }
           ]
         }
@@ -120,28 +134,27 @@ export default {
         window.addEventListener('resize', () => {
           this.chartLine.resize()
         })
-        this.getCharLineData()
       },
       getCharLineData () {
         this.$http({
-          url: this.$http.adornUrl('/sys/user/info'),
+          url: this.$http.adornUrl('/express/echars/line'),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
           if (data && data.code === 0) {
+            console.log(data.taskLine)
             this.chartLine.setOption({
               'xAxis': {
-                'type': 'category',
-                'data': [ '周一', '周二', '周三', '周四', '周五', '周六', '周日' ]
+                'data': data.taskLine.month
               },
               'series': [
+                // {
+                //   'name': '揽件',
+                //   'data': data.taskLine.collect
+                // },
                 {
-                  'name': '揽件',
-                  'data': [ 120, 132, 101, 134, 90, 230, 210 ]
-                },
-                {
-                  'name': '派件',
-                  'data': [ 820, 932, 901, 934, 1290, 1330, 1320 ]
+                  'name': '订单',
+                  'data': data.taskLine.orderCount
                 }
               ]
             })
@@ -151,6 +164,9 @@ export default {
       // 柱状图
       initChartBar () {
         var option = {
+          'title': {
+            'text': '各月份派件和揽件任务'
+          },
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -158,7 +174,9 @@ export default {
             }
           },
           legend: {
-            data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎', '百度', '谷歌', '必应', '其他']
+            x: '200px',
+            y: '5px',
+            data: ['揽件', '派件']
           },
           grid: {
             left: '3%',
@@ -169,7 +187,17 @@ export default {
           xAxis: [
             {
               type: 'category',
-              data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+              axisLabel: {
+                interval: 0 // 横轴信息全部显示
+                // rotate: -15 // -15度角倾斜显示
+              }
+              // X轴月份竖直显示
+              // axisLabel: {
+              //   interval: 0,
+              //   formatter: function (value) {
+              //     return value.split('').join('\n')
+              //   }
+              // }
             }
           ],
           yAxis: [
@@ -179,67 +207,33 @@ export default {
           ],
           series: [
             {
-              name: '直接访问',
+              name: '揽件',
               type: 'bar',
-              data: [320, 332, 301, 334, 390, 330, 320]
-            },
-            {
-              name: '邮件营销',
-              type: 'bar',
-              stack: '广告',
-              data: [120, 132, 101, 134, 90, 230, 210]
-            },
-            {
-              name: '联盟广告',
-              type: 'bar',
-              stack: '广告',
-              data: [220, 182, 191, 234, 290, 330, 310]
-            },
-            {
-              name: '视频广告',
-              type: 'bar',
-              stack: '广告',
-              data: [150, 232, 201, 154, 190, 330, 410]
-            },
-            {
-              name: '搜索引擎',
-              type: 'bar',
-              data: [862, 1018, 964, 1026, 1679, 1600, 1570],
-              markLine: {
-                lineStyle: {
-                  normal: {
-                    type: 'dashed'
-                  }
-                },
-                data: [
-                  [{ type: 'min' }, { type: 'max' }]
-                ]
+              label: {
+                normal: {
+                  show: true
+                  // 柱上字体样式
+                  // textStyle: {
+                  //   fontSize: 12,
+                  //   fontWeight: 'bolder'
+                  // }
+                }
               }
+              // data: [320, 332, 301, 334, 390, 330, 320]
             },
             {
-              name: '百度',
+              name: '派件',
               type: 'bar',
-              barWidth: 5,
-              stack: '搜索引擎',
-              data: [620, 732, 701, 734, 1090, 1130, 1120]
-            },
-            {
-              name: '谷歌',
-              type: 'bar',
-              stack: '搜索引擎',
-              data: [120, 132, 101, 134, 290, 230, 220]
-            },
-            {
-              name: '必应',
-              type: 'bar',
-              stack: '搜索引擎',
-              data: [60, 72, 71, 74, 190, 130, 110]
-            },
-            {
-              name: '其他',
-              type: 'bar',
-              stack: '搜索引擎',
-              data: [62, 82, 91, 84, 109, 110, 120]
+              label: {
+                normal: {
+                  show: true,
+                  textStyle: {
+                    fontSize: 12,
+                    fontWeight: 'bolder'
+                  }
+                }
+              }
+              // stack: '广告'
             }
           ]
         }
@@ -249,12 +243,42 @@ export default {
           this.chartBar.resize()
         })
       },
+      getCharBarData () {
+        this.$http({
+          url: this.$http.adornUrl('/express/echars/bar'),
+          method: 'get',
+          params: this.$http.adornParams()
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.chartBar.setOption({
+              xAxis: [
+                {
+                  data: data.taskBar.month
+                }
+              ],
+              series: [
+                {
+                  name: '揽件',
+                  // type: 'bar',
+                  data: data.taskBar.collect
+                },
+                {
+                  name: '派件',
+                  // type: 'bar',
+                  // stack: '广告',
+                  data: data.taskBar.send
+                }
+              ]
+            })
+          }
+        })
+      },
       // 饼状图
       initChartPie () {
         var option = {
           backgroundColor: '#2c343c',
           title: {
-            text: 'Customized Pie',
+            text: '揽件和派件任务占比',
             left: 'center',
             top: 20,
             textStyle: {
@@ -279,13 +303,13 @@ export default {
               type: 'pie',
               radius: '55%',
               center: ['50%', '50%'],
-              data: [
-                { value: 335, name: '直接访问' },
-                { value: 310, name: '邮件营销' },
-                { value: 274, name: '联盟广告' },
-                { value: 235, name: '视频广告' },
-                { value: 400, name: '搜索引擎' }
-              ].sort(function (a, b) { return a.value - b.value }),
+              // data: [
+              //   { value: 335, name: '直接访问' },
+              //   { value: 310, name: '邮件营销' },
+              //   { value: 274, name: '联盟广告' },
+              //   { value: 235, name: '视频广告' },
+              //   { value: 400, name: '搜索引擎' }
+              // ].sort(function (a, b) { return a.value - b.value }),
               roseType: 'radius',
               label: {
                 normal: {
@@ -325,6 +349,31 @@ export default {
           this.chartPie.resize()
         })
       },
+      getCharPieData () {
+        this.$http({
+          url: this.$http.adornUrl('/express/echars/pie'),
+          method: 'get',
+          params: this.$http.adornParams()
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            console.log(data)
+            console.log(data.taskPie.month)
+            console.log(data.taskPie.collect)
+            console.log(data.taskPie.send)
+            this.chartPie.setOption({
+              series: [
+                {
+                  name: '访问来源',
+                  data: [
+                    { value: 535, name: '揽件' },
+                    { value: 310, name: '派件' }
+                  ].sort(function (a, b) { return a.value - b.value })
+                }
+              ]
+            })
+          }
+        })
+      },
       // 散点图
       initChartScatter () {
         var option = {
@@ -333,7 +382,7 @@ export default {
             { offset: 1, color: '#cdd0d5' }
           ]),
           title: {
-            text: '1990 与 2015 年各国家人均寿命与 GDP'
+            text: '揽件与派件各快递员任务 与 GDP'
           },
           legend: {
             right: 10,
@@ -361,22 +410,7 @@ export default {
                 [28604, 77, 17096869, 'Australia', 1990],
                 [31163, 77.4, 27662440, 'Canada', 1990],
                 [1516, 68, 1154605773, 'China', 1990],
-                [13670, 74.7, 10582082, 'Cuba', 1990],
-                [28599, 75, 4986705, 'Finland', 1990],
-                [29476, 77.1, 56943299, 'France', 1990],
-                [31476, 75.4, 78958237, 'Germany', 1990],
-                [28666, 78.1, 254830, 'Iceland', 1990],
-                [1777, 57.7, 870601776, 'India', 1990],
-                [29550, 79.1, 122249285, 'Japan', 1990],
-                [2076, 67.9, 20194354, 'North Korea', 1990],
-                [12087, 72, 42972254, 'South Korea', 1990],
-                [24021, 75.4, 3397534, 'New Zealand', 1990],
-                [43296, 76.8, 4240375, 'Norway', 1990],
-                [10088, 70.8, 38195258, 'Poland', 1990],
-                [19349, 69.6, 147568552, 'Russia', 1990],
-                [10670, 67.3, 53994605, 'Turkey', 1990],
-                [26424, 75.7, 57110117, 'United Kingdom', 1990],
-                [37062, 75.4, 252847810, 'United States', 1990]
+                [13670, 74.7, 10582082, 'Cuba', 1990]
               ],
               type: 'scatter',
               symbolSize: function (data) {
@@ -409,22 +443,7 @@ export default {
                 [44056, 81.8, 23968973, 'Australia', 2015],
                 [43294, 81.7, 35939927, 'Canada', 2015],
                 [13334, 76.9, 1376048943, 'China', 2015],
-                [21291, 78.5, 11389562, 'Cuba', 2015],
-                [38923, 80.8, 5503457, 'Finland', 2015],
-                [37599, 81.9, 64395345, 'France', 2015],
-                [44053, 81.1, 80688545, 'Germany', 2015],
-                [42182, 82.8, 329425, 'Iceland', 2015],
-                [5903, 66.8, 1311050527, 'India', 2015],
-                [36162, 83.5, 126573481, 'Japan', 2015],
-                [1390, 71.4, 25155317, 'North Korea', 2015],
-                [34644, 80.7, 50293439, 'South Korea', 2015],
-                [34186, 80.6, 4528526, 'New Zealand', 2015],
-                [64304, 81.6, 5210967, 'Norway', 2015],
-                [24787, 77.3, 38611794, 'Poland', 2015],
-                [23038, 73.13, 143456918, 'Russia', 2015],
-                [19360, 76.5, 78665830, 'Turkey', 2015],
-                [38225, 81.4, 64715810, 'United Kingdom', 2015],
-                [53354, 79.1, 321773631, 'United States', 2015]
+                [21291, 78.5, 11389562, 'Cuba', 2015]
               ],
               type: 'scatter',
               symbolSize: function (data) {
@@ -453,10 +472,10 @@ export default {
             }
           ]
         }
-        this.chartPie = echarts.init(document.getElementById('J_chartScatterBox'))
-        this.chartPie.setOption(option)
+        this.chartScatter = echarts.init(document.getElementById('J_chartScatterBox'))
+        this.chartScatter.setOption(option)
         window.addEventListener('resize', () => {
-          this.chartPie.resize()
+          this.chartScatter.resize()
         })
       }
     }
