@@ -12,13 +12,13 @@
       </el-form-item>
       <el-form-item>
         <el-select v-model="dataForm.taskType" placeholder="任务类型">
-          <el-option v-for="(item,index) in dataForm.typeItems" 
+          <el-option v-for="(item,index) in dataForm.typeItems"
           :label="item.label" :value="item.value" :key="index"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
         <el-select v-model="dataForm.taskStatus" placeholder="任务状态" >
-           <el-option v-for="(item,index) in dataForm.statusItems" 
+           <el-option v-for="(item,index) in dataForm.statusItems"
           :label="item.label" :value="item.value" :key="index"></el-option>
         </el-select>
       </el-form-item>
@@ -37,7 +37,7 @@
       <el-form-item>
         <el-input v-model="dataForm.area" placeholder="区" clearable></el-input>
       </el-form-item>
-      
+
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button v-if="isAuth('express:task:save')" type="primary" @click="addOrUpdateHandle('')">新增</el-button>
@@ -106,6 +106,14 @@
         show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
+        prop="resendName"
+        header-align="center"
+        align="center"
+        label="收/寄件人姓名"
+        width="120"
+        show-overflow-tooltip="true">
+      </el-table-column>
+      <el-table-column
         prop="phoneNum"
         header-align="center"
         align="center"
@@ -138,10 +146,10 @@
         show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="detaileAddr"
         header-align="center"
         align="center"
-        label="地址"
+        label="详细地址"
         width="200"
         show-overflow-tooltip="true">
       </el-table-column>
@@ -234,6 +242,7 @@
           taskType: '',
           taskStatus: '10',
           transportNo: '',
+          resendName: '',
           phoneNum: '',
           province: '',
           city: '',
@@ -244,11 +253,11 @@
               label: '其他'
             },
             {
-              value: 'pull',
+              value: 'collect',
               label: '揽件'
             },
             {
-              value: 'push',
+              value: 'send',
               label: '派件'
             }
           ],
@@ -274,7 +283,7 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
-        allocationVisible: false,
+        allocationVisible: false
       }
     },
     components: {
@@ -300,10 +309,12 @@
             'taskType': this.dataForm.taskType,
             'taskStatus': this.dataForm.taskStatus,
             'transportNo': this.dataForm.transportNo,
+            'resendName': this.dataForm.resendName,
             'phoneNum': this.dataForm.phoneNum,
             'province': this.dataForm.province,
             'city': this.dataForm.city,
             'area': this.dataForm.area,
+            'detaileAddr': this.dataForm.detaileAddr
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -333,14 +344,13 @@
       },
       // 新增 / 修改
       addOrUpdateHandle (id) {
-        var operate=false;
-        if(id=='')
-        {
-          operate=true;
+        var operate = false
+        if (id == '') {
+          operate = true
         }
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id,operate)
+          this.$refs.addOrUpdate.init(id, operate)
         })
       },
       // 删除
@@ -374,7 +384,7 @@
         })
       },
 
-      //分配
+      // 分配
       allocationHandle (id) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
           return item.taskId
@@ -382,7 +392,7 @@
 
         this.allocationVisible = true
         this.$nextTick(() => {
-          this.$refs.allocation.init(ids,true)
+          this.$refs.allocation.init(ids, true)
         })
       }
     }
