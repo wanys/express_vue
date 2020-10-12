@@ -2,7 +2,7 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+        <el-input v-model="dataForm.content" placeholder="评论内容" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -22,41 +22,83 @@
         align="center"
         width="50">
       </el-table-column>
-      <el-table-column
+      <!--<el-table-column
         prop="commentId"
         header-align="center"
         align="center"
         label="ID">
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column
         prop="userId"
         header-align="center"
         align="center"
-        label="用户ID">
+        label="用户">
       </el-table-column>
       <el-table-column
         prop="messengerId"
         header-align="center"
         align="center"
-        label="快递员ID">
+        label="快递员">
       </el-table-column>
       <el-table-column
-        prop="service"
+        prop="orderId"
         header-align="center"
         align="center"
-        label="服务质量打分">
+        label="订单号">
       </el-table-column>
       <el-table-column
-        prop="speed"
+        prop="serviceAttitude"
         header-align="center"
         align="center"
-        label="物流速度打分">
+        label="快递员服务态度">
       </el-table-column>
       <el-table-column
-        prop="goods"
+        prop="professional"
         header-align="center"
         align="center"
-        label="物品完好度">
+        label="快递员专业性">
+      </el-table-column>
+      <el-table-column
+        prop="spending"
+        header-align="center"
+        align="center"
+        label="费用合理性">
+      </el-table-column>
+      <el-table-column
+        prop="getSpeed"
+        header-align="center"
+        align="center"
+        label="取货/送货时间">
+      </el-table-column>
+      <el-table-column
+        prop="beginSpeed"
+        header-align="center"
+        align="center"
+        label="发货/派送时间">
+      </el-table-column>
+      <el-table-column
+        prop="transportSpeed"
+        header-align="center"
+        align="center"
+        label="物品运输速度">
+      </el-table-column>
+      <el-table-column
+        prop="personalInfoSec"
+        header-align="center"
+        align="center"
+        label="个人信息安全">
+      </el-table-column>
+      <el-table-column
+        prop="complete"
+        header-align="center"
+        align="center"
+        label="物品完整度">
+      </el-table-column>
+      <el-table-column
+        prop="goodsSec"
+        header-align="center"
+        align="center"
+        label="物品安全性">
       </el-table-column>
       <el-table-column
         prop="content"
@@ -70,7 +112,7 @@
         align="center"
         label="综合得分">
       </el-table-column>
-      <el-table-column
+      <!--<el-table-column
         prop="createBy"
         header-align="center"
         align="center"
@@ -93,7 +135,7 @@
         header-align="center"
         align="center"
         label="修改时间">
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column
         fixed="right"
         header-align="center"
@@ -126,7 +168,7 @@
     data () {
       return {
         dataForm: {
-          key: ''
+          content: ''
         },
         dataList: [],
         pageIndex: 1,
@@ -153,7 +195,7 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key
+            'content': this.dataForm.content
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -193,7 +235,7 @@
         var ids = id ? [id] : this.dataListSelections.map(item => {
           return item.commentId
         })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+        this.$confirm(`确定对[评论：${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
