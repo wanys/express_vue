@@ -276,69 +276,39 @@ export default {
       // 饼状图
       initChartPie () {
         var option = {
-          backgroundColor: '#2c343c',
           title: {
-            text: '揽件和派件任务占比',
-            left: 'center',
-            top: 20,
-            textStyle: {
-              color: '#ccc'
-            }
+            text: '各等级评分占比',
+            subtext: '本季度',
+            left: 'center'
           },
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)'
           },
-          visualMap: {
-            show: false,
-            min: 80,
-            max: 600,
-            inRange: {
-              colorLightness: [0, 1]
-            }
+          legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: ['非常满意', '满意', '一般', '不满意', '非常不满意']
           },
           series: [
             {
-              name: '访问来源',
+              name: '占比',
               type: 'pie',
               radius: '55%',
-              center: ['50%', '50%'],
-              // data: [
-              //   { value: 335, name: '直接访问' },
-              //   { value: 310, name: '邮件营销' },
-              //   { value: 274, name: '联盟广告' },
-              //   { value: 235, name: '视频广告' },
-              //   { value: 400, name: '搜索引擎' }
-              // ].sort(function (a, b) { return a.value - b.value }),
-              roseType: 'radius',
-              label: {
-                normal: {
-                  textStyle: {
-                    color: 'rgba(255, 255, 255, 0.3)'
-                  }
-                }
-              },
-              labelLine: {
-                normal: {
-                  lineStyle: {
-                    color: 'rgba(255, 255, 255, 0.3)'
-                  },
-                  smooth: 0.2,
-                  length: 10,
-                  length2: 20
-                }
-              },
-              itemStyle: {
-                normal: {
-                  color: '#c23531',
-                  shadowBlur: 200,
+              center: ['50%', '60%'],
+              data: [
+                {value: 0.354, name: '非常满意'},
+                {value: 0.396, name: '满意'},
+                {value: 0.198, name: '一般'},
+                {value: 0.039, name: '不满意'},
+                {value: 0.026, name: '非常不满意'}
+              ],
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
                   shadowColor: 'rgba(0, 0, 0, 0.5)'
                 }
-              },
-              animationType: 'scale',
-              animationEasing: 'elasticOut',
-              animationDelay: function (idx) {
-                return Math.random() * 200
               }
             }
           ]
@@ -377,100 +347,42 @@ export default {
       // 散点图
       initChartScatter () {
         var option = {
-          backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [
-            { offset: 0, color: '#f7f8fa' },
-            { offset: 1, color: '#cdd0d5' }
-          ]),
           title: {
-            text: '揽件与派件各快递员任务 与 GDP'
+            text: '各方向表现优劣'
           },
-          legend: {
-            right: 10,
-            data: ['1990', '2015']
-          },
-          xAxis: {
-            splitLine: {
-              lineStyle: {
-                type: 'dashed'
-              }
-            }
-          },
-          yAxis: {
-            splitLine: {
-              lineStyle: {
-                type: 'dashed'
+          tooltip: {},
+          /* legend: {
+            data: ['服务方向']
+          }, */
+          radar: {
+            // shape: 'circle',
+            name: {
+              textStyle: {
+                color: '#fff',
+                backgroundColor: '#999',
+                borderRadius: 3,
+                padding: [3, 5]
               }
             },
-            scale: true
+            indicator: [
+              {name: '服务方向', max: 0.5},
+              {name: '速度方向', max: 0.5},
+              {name: '安全方向', max: 0.5}
+            ]
           },
-          series: [
-            {
-              name: '1990',
-              data: [
-                [28604, 77, 17096869, 'Australia', 1990],
-                [31163, 77.4, 27662440, 'Canada', 1990],
-                [1516, 68, 1154605773, 'China', 1990],
-                [13670, 74.7, 10582082, 'Cuba', 1990]
-              ],
-              type: 'scatter',
-              symbolSize: function (data) {
-                return Math.sqrt(data[2]) / 5e2
-              },
-              label: {
-                emphasis: {
-                  show: true,
-                  formatter: function (param) {
-                    return param.data[3]
-                  },
-                  position: 'top'
-                }
-              },
-              itemStyle: {
-                normal: {
-                  shadowBlur: 10,
-                  shadowColor: 'rgba(120, 36, 50, 0.5)',
-                  shadowOffsetY: 5,
-                  color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [
-                    { offset: 0, color: 'rgb(251, 118, 123)' },
-                    { offset: 1, color: 'rgb(204, 46, 72)' }
-                  ])
-                }
+          series: [{
+            name: '综合',
+            type: 'radar',
+            radius: '55%',
+            center: ['50%', '80%'],
+            // areaStyle: {normal: {}},
+            data: [
+              {
+                value: [0.354, 0.396, 0.354],
+                name: '服务方向'
               }
-            },
-            {
-              name: '2015',
-              data: [
-                [44056, 81.8, 23968973, 'Australia', 2015],
-                [43294, 81.7, 35939927, 'Canada', 2015],
-                [13334, 76.9, 1376048943, 'China', 2015],
-                [21291, 78.5, 11389562, 'Cuba', 2015]
-              ],
-              type: 'scatter',
-              symbolSize: function (data) {
-                return Math.sqrt(data[2]) / 5e2
-              },
-              label: {
-                emphasis: {
-                  show: true,
-                  formatter: function (param) {
-                    return param.data[3]
-                  },
-                  position: 'top'
-                }
-              },
-              itemStyle: {
-                normal: {
-                  shadowBlur: 10,
-                  shadowColor: 'rgba(25, 100, 150, 0.5)',
-                  shadowOffsetY: 5,
-                  color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [
-                    { offset: 0, color: 'rgb(129, 227, 238)' },
-                    { offset: 1, color: 'rgb(25, 183, 207)' }
-                  ])
-                }
-              }
-            }
-          ]
+            ]
+          }]
         }
         this.chartScatter = echarts.init(document.getElementById('J_chartScatterBox'))
         this.chartScatter.setOption(option)
